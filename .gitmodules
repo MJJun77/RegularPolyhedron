@@ -4,3 +4,6 @@
 [submodule "externals/glfw"]
 	path = externals/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "externals/CombiTraversal"]
+	path = externals/CombiTraversal
+	url = https://github.com/MJJun77/combination-traversal.git
