@@ -9,7 +9,7 @@
 class FaceInfo
 {
 public:
-	glm::vec3 maFaces[3];
+	glm::vec3 maFaceVertex[3];
 public:
 	FaceInfo();
 	FaceInfo(const std::vector<glm::vec3>* vecVertex);
@@ -30,6 +30,7 @@ public:
 	FaceManager() {}
 	int GenerateFace(const std::vector<glm::vec3>* vVertices, int gen_algo = 0);
 	void PrintInfo(const char* msg = "");
+	const std::vector<FaceInfo>* GetDataInfo() { return &mvFaces; }
 private:
 	int GenerateFace_BruteForce(const std::vector<glm::vec3>* vVertices);
 	int GenerateFace_ContourDetect(const std::vector<glm::vec3>* vVertices);

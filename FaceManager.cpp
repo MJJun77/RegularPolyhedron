@@ -24,9 +24,9 @@ FaceInfo::FaceInfo(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2
 }
 void FaceInfo::SetVertices_Final(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2)
 {
-	maFaces[0] = p0;
-	maFaces[1] = p1;
-	maFaces[2] = p2;
+	maFaceVertex[0] = p0;
+	maFaceVertex[1] = p1;
+	maFaceVertex[2] = p2;
 }
 void FaceInfo::MakeAsCCW()
 {
@@ -39,20 +39,20 @@ bool FaceInfo::IsCCW()
 }
 void FaceInfo::ReverseWind()
 {
-	glm::vec3 temp = maFaces[2];
-	maFaces[2] = maFaces[0];
-	maFaces[0] = temp;
+	glm::vec3 temp = maFaceVertex[2];
+	maFaceVertex[2] = maFaceVertex[0];
+	maFaceVertex[0] = temp;
 }
 void FaceInfo::PrintInfo(const char* msg)
 {
 	std::cout << msg << "[" << std::fixed << std::setw(4) << std::setprecision(3) 
-		<< maFaces[0].x << ", " << maFaces[0].y << ", " << maFaces[0].z << "]  ["
-		<< maFaces[1].x << ", " << maFaces[1].y << ", " << maFaces[1].z << "]  ["
-		<< maFaces[2].x << ", " << maFaces[2].y << ", " << maFaces[2].z << "]"
+		<< maFaceVertex[0].x << ", " << maFaceVertex[0].y << ", " << maFaceVertex[0].z << "]  ["
+		<< maFaceVertex[1].x << ", " << maFaceVertex[1].y << ", " << maFaceVertex[1].z << "]  ["
+		<< maFaceVertex[2].x << ", " << maFaceVertex[2].y << ", " << maFaceVertex[2].z << "]"
 		<< "=> Each Len : {" 
-		<< glm::length(maFaces[0] - maFaces[1]) << ", "
-		<< glm::length(maFaces[1] - maFaces[2]) << ", "
-		<< glm::length(maFaces[2] - maFaces[0]) << "}"
+		<< glm::length(maFaceVertex[0] - maFaceVertex[1]) << ", "
+		<< glm::length(maFaceVertex[1] - maFaceVertex[2]) << ", "
+		<< glm::length(maFaceVertex[2] - maFaceVertex[0]) << "}"
 		<< std::endl;
 }
 

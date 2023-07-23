@@ -4,19 +4,35 @@ project(ShowMainPolyHedron VERSION 0.1.0 LANGUAGES C CXX)
 add_subdirectory(externals/glfw)
 add_subdirectory(externals/glm)
 
+#==========================================================
+#==========================================================
 add_executable(ShowMainPolyHedron 
-	main-prog.cpp 
+	main-gl-prog.cpp 
 	externals/glad/glad.c
 	externals/CombiTraversal/CombiIdxMgr.cpp
 	VertexManager.cpp
 	FaceManager.cpp
 	simple_aux.cpp
+	PolyHedronDrawer.cpp
+	DrawingObject.cpp
 )
 
 target_link_libraries(ShowMainPolyHedron glm)
 target_link_libraries(ShowMainPolyHedron glfw)
-
 target_include_directories(ShowMainPolyHedron PRIVATE externals/glm)
 target_include_directories(ShowMainPolyHedron PRIVATE externals/glad)
+target_include_directories(ShowMainPolyHedron PRIVATE externals/)
 target_include_directories(ShowMainPolyHedron PRIVATE externals/CombiTraversal)
 
+#==========================================================
+#==========================================================
+# add_executable(Example_ConsoleProgram
+# 	main-example.cpp 
+# 	externals/CombiTraversal/CombiIdxMgr.cpp
+# 	VertexManager.cpp
+# 	FaceManager.cpp
+# 	simple_aux.cpp
+# )
+# target_link_libraries(Example_ConsoleProgram glm)
+# target_include_directories(Example_ConsoleProgram PRIVATE externals/glm)
+# target_include_directories(Example_ConsoleProgram PRIVATE externals/CombiTraversal)

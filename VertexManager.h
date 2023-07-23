@@ -15,6 +15,7 @@ public:
 	void Step(int step, float repulsePowerFactor = 1.0f);
 	void AddRandomVertices(int cnt);
 	void AddVertex(const glm::vec3& vertex) { mvVertices.push_back(vertex); }
+	void ClearData() { mvVertices.clear(); }
 	void RemoveLastVertex();
 	const std::vector<glm::vec3>* GetVecVertices() { return &mvVertices; }
 public:	// Debugging
