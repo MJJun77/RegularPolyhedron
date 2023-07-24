@@ -1,18 +1,27 @@
 # RegularPolyhedron
+This program simulates RegularPolyhedron of Triangle face for the given number of vertices. 
+In real, there are only 3 PolyHedron of Triangle face: Tetrahedron, Octahedron, Icosahedron.
+But what is the most approximate model when the Vertex count is not one of 4, 6, 12 ?
 
 ## Vertex / Edge / Face number relation
 Pyramid has : (V, E, F) = (4, 6, 4)
-Then, if 1 Vertex is added over the one of the face, 1 face becomes 3 - 2 faces are increased.
+Then, if 1 Vertex is added over the one of the face, 1 face becomes 3. 2 faces are increased after 1 vertex is added.
 So when Vertex count V >= 4, # of triangle face is : 4 + (V - 4) * 2 = 2V - 4
 And, if all the faces are triangle shape, edge count is `# of faces` * 3 / 2 = 3V - 6
 So, for the V vertex's polyhedron's (V, E, F) is : (V, 3V - 6, 2V - 4) for V >= 4
 
 ## Program
-There are only 3 PolyHedron with Triangles when Vertex = 4, 6, 12.  
 How will be the shape if Vertex count are not one of these ?
+To try approximated PolyHedron with given vertex count, each given numbef or vertex is initially arranged `r = 1` space randomly.
+Then each vertex repulses each other on each step, as like electron behavior.
 
-To try PolyHedron with given vertex count, each vertex is initially arranged `r = 1` space randomly.
-Then each vertex repulses each other.
+## Build
+Please don't forget to download submodule also.
+```
+$> git clone [this git link]
+$> cd [downloaded git dir]
+$> git submodule update --init --recursive
+```
 
 ## UI menu
 1) Vertex Count : It determines PolyHedron's vertex count.  For example, if vertex count is 12, face count is : 12 * 2 - 4 = 20 (Regular PolyHedron)
@@ -27,9 +36,8 @@ Then each vertex repulses each other.
 You can rotate the object using Up, Down, Left, Right key, and move the view position using 'A', 'D', 'W', 'S', 'X', 'Space' key.
 
 ## Reference program
-This is a kind of personal OpenGL study after reading great material in https://learnopengl.com/ 
+This is a kind of personal OpenGL study after reading great material in https://learnopengl.com/ .
 Many of source code is reused (slightly modified) from there.  <br>
-For the effective UI object control, I also referred box2d source code.
 
 ## Screen Capture
 ![Running UI program capture](./resources/images/PolyHedron_UI_Run.gif)
