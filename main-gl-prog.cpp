@@ -12,27 +12,80 @@
 
 // For my code
 #include <iostream>
+#include <string>
+#include <sstream>
 #include "VertexManager.h"
 #include "FaceManager.h"
 #include "PolyHedronDrawer.h"
+
+// For imgui
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void processInput(GLFWwindow *window);
+void CreateImguiUI(GLFWwindow* window, const char* glslVersion = NULL);
+void UpdateImguiUI();
 
 const unsigned int SCR_WIDTH = 1600;
 const unsigned int SCR_HEIGHT = 900;
 
-Camera myCam(glm::vec3(0.0f, 0.0f, 6.0f));
+#define DEF_CAM_POS (glm::vec3(0.0f, 0.0f, 6.0f))
+#define DEF_CAM_UP  (glm::vec3(0.0f, 1.0f, 0.0f))
+Camera myCam(DEF_CAM_POS, DEF_CAM_UP);
+
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
 
-// timing
+// Global Setting - Adjustible by imgui
+int giMaxStepSetting = 50; // Unit is 100, so real val is 50 * 100
+int giPolyHedronVertexCnt = 12;
+float gfDoneCheckDiffSetting = 0.1f; // Imgui min resolution is 0.001 ...
+float gfRepulsivePower = 0.05f;
+float gfReservedStepMSec = 30.0f;
+bool gbRestartClicked = false;
+
+// Main while loop state variable
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+int giLoopStep = 0;
+bool gbStabledNotified = false;
+string gStrLatestMsg;
+
+void InitMainLoopState()
+{
+    deltaTime = 0.0f;
+    lastFrame = 0.0f;
+    giLoopStep = 0;
+    gbStabledNotified = false;
+    gStrLatestMsg = "";
+}
+
+// imgui max resolution is 0.001, so ...
+template <typename T>
+inline T AdjustScaleSetting(T fVal, T factor)
+{
+    return fVal * factor;
+}
+
+void InitObjects(VertexManager* pVertexMgr, FaceManager* pFaceMgr, PolyHedronDrawer* pPolyDrawer, Camera* pCam)
+{
+    pCam->InitStatus(DEF_CAM_POS, DEF_CAM_UP);
+
+    pVertexMgr->Init(AdjustScaleSetting(gfDoneCheckDiffSetting, 0.001f));
+    pVertexMgr->AddRandomVertices(giPolyHedronVertexCnt);
+    pFaceMgr->GenerateFace(pVertexMgr->GetVecVertices());
+
+    pPolyDrawer->InitDrawer();
+    pPolyDrawer->UpdateFaceData(pFaceMgr->GetDataInfo());
+    pPolyDrawer->UpdateViewData(&myCam, 0);
+
+}
 
 int main()
 {
@@ -65,44 +118,74 @@ int main()
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
+    CreateImguiUI(window, nullptr);
 
     //====================================================
-	VertexManager vertexMgr;
-	vertexMgr.AddRandomVertices(12);
+	VertexManager vertexMgr(AdjustScaleSetting(gfDoneCheckDiffSetting, 0.001f));
 
 	FaceManager faceMgr;
-	faceMgr.GenerateFace(vertexMgr.GetVecVertices());
+	// faceMgr.GenerateFace(vertexMgr.GetVecVertices());
 
 	PolyHedronDrawer polyDrawer;
-	polyDrawer.UpdateFaceData(faceMgr.GetDataInfo());
-	polyDrawer.UpdateViewData(&myCam, 0);
+	// polyDrawer.UpdateFaceData(faceMgr.GetDataInfo());
+	// polyDrawer.UpdateViewData(&myCam, 0);
 
-	const int maxStep = 5000;
-	const float stepMSec = 0.25f;
     // render loop
     // -----------
-	int loopStep = 0;
 
+    InitObjects(&vertexMgr, &faceMgr, &polyDrawer, &myCam);
+    InitMainLoopState();
+
+    gStrLatestMsg = "On progress...";
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
+        if (gbRestartClicked)
+        {
+            gbRestartClicked = false;
+            InitObjects(&vertexMgr, &faceMgr, &polyDrawer, &myCam);
+            InitMainLoopState();
+            gStrLatestMsg = "Restarted. On Progress...";
+            continue;
+        }
 
-        float currentFrame = static_cast<float>(glfwGetTime()); // Cur value in SEC.
-        deltaTime = currentFrame - lastFrame; // My laptop, if print, avg is 0.25f
+        float currentFrame = static_cast<float>(glfwGetTime()); // Cur value in SEC as float, including msec in fraction.
+        currentFrame *= 1000.0f;    // Change it to msec.
+        deltaTime = currentFrame - lastFrame; // My laptop, if print, avg is 0.25f in sec -> 250 msec
 
-		if (deltaTime > stepMSec)
+		if (deltaTime > gfReservedStepMSec)
 		{
             lastFrame = currentFrame;
-			if (loopStep < maxStep)
+            if (vertexMgr.IsStabled())
+            {
+                if (!gbStabledNotified)
+                {
+                    gbStabledNotified = true;
+
+                    ostringstream oss;
+                    oss << "Vertex arrangement is stabled at step of: " 
+                        << giLoopStep << " / " << AdjustScaleSetting(giMaxStepSetting, 100) << endl;
+                    gStrLatestMsg = oss.str();
+                }
+            }
+			else if (giLoopStep < AdjustScaleSetting(giMaxStepSetting, 100))
 			{
-				loopStep++;
-                vertexMgr.Step(1, 0.5f);
+				giLoopStep++;
+                vertexMgr.Step(1, gfRepulsivePower, giLoopStep);
 				faceMgr.GenerateFace(vertexMgr.GetVecVertices());
 				polyDrawer.UpdateFaceData(faceMgr.GetDataInfo());
 			}
+            else
+            {
+                ostringstream oss;
+                oss << "Vertex arrangement step is exhausted: " 
+                    << AdjustScaleSetting(giMaxStepSetting, 100) << " / " << AdjustScaleSetting(giMaxStepSetting, 100) << endl;
+                gStrLatestMsg = oss.str();
+            }
 		}
         polyDrawer.UpdateViewData(&myCam, 1);
 	
@@ -111,7 +194,16 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
         polyDrawer.Render();
+
+        UpdateImguiUI();
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -119,7 +211,8 @@ int main()
         glfwPollEvents();
     }
 
-
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
     glfwTerminate();
     return 0;
 }
@@ -184,4 +277,84 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     lastY = ypos;
 
     myCam.ProcessMouseMovement(xoffset, yoffset);
+}
+
+//===========================================================================
+#include <fstream>
+inline bool CheckFileExist(const std::string& name)
+{
+    ifstream f(name.c_str());
+    return f.good();
+}
+
+void CreateImguiUI(GLFWwindow* window, const char* glslVersion)
+{
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+
+	bool success = ImGui_ImplGlfw_InitForOpenGL(window, true);
+	if (success == false)
+	{
+		printf("ImGui_ImplGlfw_InitForOpenGL failed\n");
+	}
+
+	success = ImGui_ImplOpenGL3_Init(glslVersion);
+	if (success == false)
+	{
+		printf("ImGui_ImplOpenGL3_Init failed\n");
+	}
+
+	// Search for font file
+	const char* fontPath1 = "../resources/fonts/droid_sans.ttf";
+	const char* fontPath2 = "../../resources/fonts/droid_sans.ttf";
+	const char* fontPath = nullptr;
+
+    bool bExistFontFile1 = CheckFileExist(fontPath1);
+    bool bExistFontFile2 = CheckFileExist(fontPath2);
+    if (bExistFontFile1)
+        fontPath = fontPath1;
+    else if (bExistFontFile2)
+        fontPath = fontPath2;
+
+	if (fontPath)
+	{
+        float s_displayScale = 1.0f;
+		ImGui::GetIO().Fonts->AddFontFromFileTTF(fontPath, 14.0f * s_displayScale);
+	}
+}
+
+//===========================================================================
+void UpdateImguiUI()
+{
+    ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(450, 300), ImGuiCond_FirstUseEver);
+
+    ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_None);
+
+    if (ImGui::BeginTabBar("ControlTabs", ImGuiTabBarFlags_None))
+    {
+        if (ImGui::BeginTabItem("Controls"))
+        {
+            const float widgetSize = 200.0f;
+            ImGui::SetNextItemWidth(widgetSize);
+            ImGui::SliderInt("Vertex Count (12)                ", &giPolyHedronVertexCnt, 4, 50);
+            ImGui::SetNextItemWidth(widgetSize);
+            ImGui::SliderInt("Max Simul step * 100 (5)         ", &giMaxStepSetting, 1, 50);
+
+            ImGui::SetNextItemWidth(widgetSize);
+            ImGui::SliderFloat("Repuls strength (0.5)          ", &gfRepulsivePower, 0.001f, 1.0f);
+            ImGui::SetNextItemWidth(widgetSize);
+            ImGui::SliderFloat("Stable diff * 10^-3 (0.1)      ", &gfDoneCheckDiffSetting, 0.02f, 1.0f);
+            ImGui::SetNextItemWidth(widgetSize);
+            ImGui::SliderFloat("Step msec reserve (30.0)       ", &gfReservedStepMSec, 10.0f, 1000.0f);
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
+    }
+    if (ImGui::Button("Restart"))
+        gbRestartClicked = true;
+
+    ImGui::Text(gStrLatestMsg.c_str());
+
+	ImGui::End();
 }

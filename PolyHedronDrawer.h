@@ -22,7 +22,6 @@ public:
 	bool UpdateViewData(const Camera* pCam, int dbgPath);
 
 	bool Render();
-private:
 	bool InitDrawer();
 };
 

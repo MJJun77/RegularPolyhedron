@@ -10,12 +10,16 @@ class VertexManager
 {
 private:
 	std::vector<glm::vec3> mvVertices;
+	bool mbStabledStatus;
+	float mfDiffCheckVal;
 public:
-	void Clear();
-	void Step(int step, float repulsePowerFactor = 1.0f);
+	VertexManager(float diffVal = 0.0001f);
+	void Init(float diffVal);
+	void SetMoveDiffCheckVal(float fVal);
+	void Step(int step, float repulsePowerFactor = 1.0f, int dbgCnt = 0);
+	bool IsStabled() { return mbStabledStatus; }
 	void AddRandomVertices(int cnt);
 	void AddVertex(const glm::vec3& vertex) { mvVertices.push_back(vertex); }
-	void ClearData() { mvVertices.clear(); }
 	void RemoveLastVertex();
 	const std::vector<glm::vec3>* GetVecVertices() { return &mvVertices; }
 public:	// Debugging

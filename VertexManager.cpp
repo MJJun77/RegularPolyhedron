@@ -15,13 +15,36 @@ random_device rDev{};
 mt19937 rEngine{rDev()};
 uniform_real_distribution<float> rDist{0.0f, 2.0f * M_PI};
 
-void VertexManager::Step(int repeatStep, float pwrFactor)
+VertexManager::VertexManager(float fVal)
+{
+	Init(fVal);
+}
+
+void VertexManager::SetMoveDiffCheckVal(float fVal)
+{
+	mfDiffCheckVal = GetNonZeroAssuredValue(fVal);
+}
+
+void VertexManager::Init(float fVal)
+{
+	mbStabledStatus = false;
+	SetMoveDiffCheckVal(fVal);
+	mvVertices.clear();
+	
+}
+
+void VertexManager::Step(int repeatStep, float pwrFactor, int dbgCnt)
 {
 	if (mvVertices.size() < 2)
+		return;
+	
+	if (mbStabledStatus)
 		return;
 
 	vector<glm::vec3> vRepulsiveForce;
 	vRepulsiveForce.resize(mvVertices.size());
+
+	std::vector<glm::vec3> vOldVertexPos(mvVertices);
 
 	for (int curStep = 0; curStep < repeatStep; curStep++)
 	{
@@ -50,6 +73,20 @@ void VertexManager::Step(int repeatStep, float pwrFactor)
 			mvVertices[i] = glm::normalize(mvVertices[i]);
 		}
 	}
+
+	//---------------------------------------------------------------
+	// All vertex stability check by checking last vRepulsiveForce
+	//---------------------------------------------------------------
+	for (int i = 0; i < mvVertices.size(); i++)
+	{
+		if (!IN_RANGE(mvVertices[i].x - vOldVertexPos[i].x, -mfDiffCheckVal, mfDiffCheckVal) || 
+			!IN_RANGE(mvVertices[i].y - vOldVertexPos[i].y, -mfDiffCheckVal, mfDiffCheckVal) || 
+			!IN_RANGE(mvVertices[i].z - vOldVertexPos[i].z, -mfDiffCheckVal, mfDiffCheckVal))
+		{
+			return;	// `Keep mbStabledStatus = false`;
+		}
+	}
+	mbStabledStatus = true;
 }
 
 bool VertexManager::IsCloseEachOther(const glm::vec3& left, const glm::vec3& right)

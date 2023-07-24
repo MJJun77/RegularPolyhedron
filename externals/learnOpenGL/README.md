@@ -1,0 +1,1 @@
+Those files were copied & slightly modified from https://learnopengl.com/ or https://github.com/JoeyDeVries/LearnOpenGL, the best OpenGL learning material.

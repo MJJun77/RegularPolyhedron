@@ -14,6 +14,7 @@ public:
 	FaceInfo();
 	FaceInfo(const std::vector<glm::vec3>* vecVertex);
 	FaceInfo(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2);
+	glm::vec3 GetNormVec();
 	void MakeAsCCW();
 	void PrintInfo(const char* msg = "");
 private:

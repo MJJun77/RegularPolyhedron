@@ -13,15 +13,18 @@ class Shader;
 class GLRenderTriangles
 {
 public:
-	GLRenderTriangles() : mVertexCnt(0), mpShader(nullptr) {}
+	GLRenderTriangles() : mVertexCnt(0), mpShader(nullptr), mbInitCreated(false) {}
 	bool Create();
 	bool UpdateFaceInfo(const std::vector<FaceInfo>* pvFaces);
-	void UpdateMat4Info(const char* uniformKey, const glm::mat4& matInfo);
+	void UpdateMVPMatInfo(const char* uniformKey, const glm::mat4& matInfo);
+	void UpdateVec3Info(const char* uniformKey, const glm::vec3& vecInfo);
+	void UpdateLightInfo(const glm::vec3& litPos, const glm::vec3& litColor, const glm::vec3& objColor, float ambiStr);
 	void Render();
 private:
-	bool AddVertex(const glm::vec3& pos, const glm::vec3& color);
+	bool AddVertex(const glm::vec3& pos, const glm::vec3& normal);
 private:
 	int mVertexCnt;
+	bool mbInitCreated;
 	enum { eVboCnt = 2};
 	enum { eMaxVertexCnt = (3 * 512) };
 
@@ -37,7 +40,7 @@ private:	// GL related objects
 
 private:
 	glm::vec3 maVertexPos[eMaxVertexCnt];
-	glm::vec3 maVertexColor[eMaxVertexCnt];
+	glm::vec3 maVertexNormal[eMaxVertexCnt];
 	Shader* mpShader;
 };
 
@@ -45,16 +48,18 @@ private:
 class GLRenderLines
 {
 public:
-	GLRenderLines() : mVertexCnt(0), mpShader(nullptr) {}
+	GLRenderLines() : mVertexCnt(0), mpShader(nullptr), mbInitCreated(false) {}
 	bool Create();
 	bool UpdateFaceInfo(const std::vector<FaceInfo>* pvFaces);
-	void UpdateMat4Info(const char* uniformKey, const glm::mat4& matInfo);
+	void UpdateMVPMatInfo(const char* uniformKey, const glm::mat4& matInfo);
+	void UpdateLineInfo(const glm::vec3& vColor, float lineWidth);
 	void Render();
 private:
-	bool AddVertex(const glm::vec3& pos, const glm::vec3& color);
+	bool AddVertex(const glm::vec3& pos);
 private:
 	int mVertexCnt;
-	enum { eVboCnt = 2};
+	bool mbInitCreated;
+	enum { eVboCnt = 1};
 	enum { eMaxVertexCnt = (2 * 3 * 512) };
 
 private:	// GL related objects
@@ -69,7 +74,6 @@ private:	// GL related objects
 
 private:
 	glm::vec3 maVertexPos[eMaxVertexCnt];
-	glm::vec3 maVertexColor[eMaxVertexCnt];
 	Shader* mpShader;
 };
 

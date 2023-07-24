@@ -28,14 +28,20 @@ void FaceInfo::SetVertices_Final(const glm::vec3& p0, const glm::vec3& p1, const
 	maFaceVertex[1] = p1;
 	maFaceVertex[2] = p2;
 }
+glm::vec3 FaceInfo::GetNormVec()
+{
+	return glm::cross(maFaceVertex[1] - maFaceVertex[0], maFaceVertex[2] - maFaceVertex[1]);
+}
 void FaceInfo::MakeAsCCW()
 {
-	if (IsCCW())
+	if (!IsCCW())
 		ReverseWind();
 }
+
+// Here, CCW means this face is visible when seeing this face plane from outside toward origin.
 bool FaceInfo::IsCCW()
 {
-	return true;	// TBD
+	return glm::dot(GetNormVec(), maFaceVertex[0]) > 0; // To determine, dot(`norm`, `any of vertex`)
 }
 void FaceInfo::ReverseWind()
 {

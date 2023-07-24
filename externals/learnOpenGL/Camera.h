@@ -28,11 +28,11 @@ enum Camera_Movement {
 // Default camera values
 const float YAW         = -90.0f;
 const float PITCH       =  0.0f;
-const float SPEED       =  0.005f;
+const float SPEED       =  0.0002f;
 const float SENSITIVITY =  0.1f;
 const float ZOOM        =  45.0f;
-const float ROTATE_ANGLE=  90.0f;
-const float ROTATE_SPEED=  2.0f;
+const float ROTATE_ANGLE=  3.0f;
+const float ROTATE_SPEED=  10.0f;
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera
@@ -73,6 +73,20 @@ public:
         WorldUp = glm::vec3(upX, upY, upZ);
         Yaw = yaw;
         Pitch = pitch;
+        updateCameraVectors();
+    }
+
+    void InitStatus(glm::vec3 position, glm::vec3 up)
+    {
+        Position = position;
+        WorldUp = up;
+
+        Yaw = YAW;
+        Pitch = PITCH;
+        Front = -Position;
+
+        mRotateSum = 0.0f;
+        mRollSum = 0.0f;
         updateCameraVectors();
     }
 
@@ -126,8 +140,6 @@ public:
             mRollSum += ROTATE_ANGLE * velocity * ROTATE_SPEED;
             if (mRollSum > 360.0f)
                 mRollSum -= 360.0f;
-
-            cout << "Front : " << Front.x << ", " << Front.y << ", " << Front.z << endl;
         }
         else if (direction == ROLL_DOWN)
         {

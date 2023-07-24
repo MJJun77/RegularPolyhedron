@@ -106,8 +106,6 @@ public:
         }
         // shader Program
         ID = glCreateProgram();
-        cout << "[INFO] Shader successfully got ID : " << ID << endl;
-
         glAttachShader(ID, vertex);
         glAttachShader(ID, fragment);
         if(geometryPath != nullptr)
@@ -126,7 +124,6 @@ public:
             glDeleteShader(geometry);
 
         mErrStatus = E_NoProblem;
-        cout << "[INFO] Shader successfully created." << endl;
     }
 
     // activate the shader
