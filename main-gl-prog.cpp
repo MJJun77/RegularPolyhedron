@@ -329,13 +329,13 @@ void UpdateImguiUI()
     ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(450, 300), ImGuiCond_FirstUseEver);
 
+    const float widgetSize = 200.0f;
     ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_None);
 
     if (ImGui::BeginTabBar("ControlTabs", ImGuiTabBarFlags_None))
     {
         if (ImGui::BeginTabItem("Controls"))
         {
-            const float widgetSize = 200.0f;
             ImGui::SetNextItemWidth(widgetSize);
             ImGui::SliderInt("Vertex Count (12)                ", &giPolyHedronVertexCnt, 4, 50);
             ImGui::SetNextItemWidth(widgetSize);
@@ -353,6 +353,9 @@ void UpdateImguiUI()
     }
     if (ImGui::Button("Restart"))
         gbRestartClicked = true;
+
+    ImGui::SetNextItemWidth(widgetSize);
+    ImGui::SliderFloat("Moving adjust      ", &myCam.mfUserSpeedSetting, 0.1f, 10.0f);
 
     ImGui::Text(gStrLatestMsg.c_str());
 

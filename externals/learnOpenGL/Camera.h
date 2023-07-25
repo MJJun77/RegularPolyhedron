@@ -55,25 +55,12 @@ public:
     float mRotateSum;   // Object rotation sum by Left, Right key click
     float mRollSum;     // Object roll sum by Up, Down key click
 
+    float mfUserSpeedSetting;
     // constructor with vectors
     Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) 
         : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), mRotateSum(0.0f), mRollSum(0.0f)
     {
-        Position = position;
-        WorldUp = up;
-        Yaw = yaw;
-        Pitch = pitch;
-        updateCameraVectors();
-    }
-    // constructor with scalar values
-    Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) 
-        : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), mRotateSum(0.0f), mRollSum(0.0f)
-    {
-        Position = glm::vec3(posX, posY, posZ);
-        WorldUp = glm::vec3(upX, upY, upZ);
-        Yaw = yaw;
-        Pitch = pitch;
-        updateCameraVectors();
+        InitStatus(position, up);
     }
 
     void InitStatus(glm::vec3 position, glm::vec3 up)
@@ -87,6 +74,7 @@ public:
 
         mRotateSum = 0.0f;
         mRollSum = 0.0f;
+        mfUserSpeedSetting = 1;
         updateCameraVectors();
     }
 
@@ -108,7 +96,7 @@ public:
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
     void ProcessKeyboard(Camera_Movement direction, float deltaTime)
     {
-        float velocity = MovementSpeed * deltaTime;     // On my laptop, approx 7e-05
+        float velocity = MovementSpeed * deltaTime * mfUserSpeedSetting;     // On my laptop, approx 7e-05
 
         if (direction == FORWARD)
             Position += Front * velocity;
@@ -208,9 +196,9 @@ private:
         {
             // calculate the new Front vector
             glm::vec3 front;
-            front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+            front.x = cos(glm::radians(Pitch)) * cos(glm::radians(Yaw));
             front.y = sin(glm::radians(Pitch));
-            front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+            front.z = cos(glm::radians(Pitch)) * sin(glm::radians(Yaw));
             Front = glm::normalize(front);
         }
         // also re-calculate the Right and Up vector
