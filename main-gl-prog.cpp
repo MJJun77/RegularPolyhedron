@@ -17,6 +17,7 @@
 #include "VertexManager.h"
 #include "FaceManager.h"
 #include "PolyHedronDrawer.h"
+#include "simple_aux.h"
 
 // For imgui
 #include "imgui.h"
@@ -31,8 +32,8 @@ void processInput(GLFWwindow *window);
 void CreateImguiUI(GLFWwindow* window, const char* glslVersion = NULL);
 void UpdateImguiUI();
 
-const unsigned int SCR_WIDTH = 1600;
-const unsigned int SCR_HEIGHT = 900;
+const unsigned int SCR_WIDTH = 1200;
+const unsigned int SCR_HEIGHT = 600;
 
 #define DEF_CAM_POS (glm::vec3(0.0f, 0.0f, 6.0f))
 #define DEF_CAM_UP  (glm::vec3(0.0f, 1.0f, 0.0f))
@@ -120,7 +121,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+	glViewport(0, 0, GET_MIN(SCR_WIDTH, SCR_HEIGHT), GET_MIN(SCR_WIDTH, SCR_HEIGHT));
 
     CreateImguiUI(window, nullptr);
 
@@ -254,7 +255,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, GET_MIN(width, height), GET_MIN(width, height));
 }
 
 // glfw: whenever the mouse moves, this callback is called
