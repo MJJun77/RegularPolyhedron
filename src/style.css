@@ -1,0 +1,210 @@
+:root {
+    color-scheme: dark;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: #0c121b;
+    color: #e6eef8;
+    accent-color: #75d5ff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+main {
+    width: min(92%, 78rem);
+    margin: 3rem auto;
+}
+
+header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+h1,
+p {
+    margin: 0;
+}
+
+h1 {
+    font-size: clamp(1.65rem, 4vw, 2.4rem);
+    letter-spacing: -0.04em;
+}
+
+#stats,
+#step-count,
+.orbit-hint,
+output {
+    color: #aabfd5;
+    font-variant-numeric: tabular-nums;
+}
+
+.workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem);
+    gap: 1rem;
+}
+
+.stage,
+aside {
+    border: 1px solid #293b50;
+    border-radius: 0.85rem;
+}
+
+.stage {
+    position: relative;
+    min-height: 35rem;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 42%, #233952, #101a29 70%);
+}
+
+#viewport {
+    position: absolute;
+    inset: 0;
+}
+
+#viewport canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.orbit-hint,
+#error {
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    pointer-events: none;
+}
+
+.orbit-hint {
+    bottom: 1rem;
+    font-size: 0.875rem;
+}
+
+#error {
+    top: 1rem;
+    color: #ffc2ae;
+}
+
+aside {
+    background: #151f2d;
+    padding: 1.25rem;
+}
+
+.readout,
+.actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+#status {
+    color: #8fdcff;
+    font-weight: 600;
+}
+
+fieldset {
+    min-width: 0;
+    border: 0;
+    padding: 0;
+    margin: 1rem 0 0;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button,
+input[type="number"] {
+    color: inherit;
+    background: #202e40;
+    border: 1px solid #3c5069;
+    border-radius: 0.45rem;
+    padding: 0.5rem;
+}
+
+button {
+    flex: 1;
+    cursor: pointer;
+}
+
+button.primary {
+    color: #081722;
+    background: #75d5ff;
+    border-color: #75d5ff;
+    font-weight: 600;
+}
+
+button:enabled:hover {
+    filter: brightness(1.18);
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.setting {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.15rem 0;
+    border-bottom: 1px solid #293b50;
+    font-size: 0.9375rem;
+}
+
+.setting:last-child {
+    border-bottom: 0;
+}
+
+.vertex-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.vertex-stepper button {
+    flex: none;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+}
+
+.vertex-stepper output {
+    min-width: 2ch;
+    text-align: center;
+}
+
+input[type="range"] {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 0;
+}
+
+input[type="number"] {
+    width: 5.5rem;
+}
+
+@media (max-width: 46rem) {
+    main {
+        margin: 1.5rem auto;
+    }
+
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .stage {
+        min-height: 22rem;
+    }
+}

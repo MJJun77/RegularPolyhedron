@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Regular Polyhedron</title>
+    </head>
+    <body>
+        <main>
+            <header>
+                <h1>Regular Polyhedron</h1>
+                <p id="stats"></p>
+            </header>
+            <div class="workspace">
+                <section class="stage" aria-label="Interactive polyhedron">
+                    <div id="viewport"></div>
+                    <p class="orbit-hint">Drag to rotate · Scroll to zoom</p>
+                    <p id="error" role="alert" hidden>
+                        The 3D view could not start. Check that your browser
+                        supports WebGL 2.
+                    </p>
+                </section>
+                <aside aria-label="Simulation settings">
+                    <div class="readout">
+                        <p id="status" role="status">Paused</p>
+                        <p id="step-count" aria-label="Step count">0 / 5000</p>
+                    </div>
+                    <fieldset id="controls">
+                        <div class="actions">
+                            <button id="play" class="primary" type="button">
+                                Play
+                            </button>
+                            <button id="step" type="button">Step</button>
+                            <button id="reset" type="button">Reset</button>
+                        </div>
+                        <div class="setting">
+                            <label for="vertex-count">Vertices</label>
+                            <div class="vertex-stepper">
+                                <button
+                                    id="vertex-decrease"
+                                    type="button"
+                                    aria-label="Decrease vertices"
+                                >
+                                    −
+                                </button>
+                                <output
+                                    id="vertex-count-value"
+                                    for="vertex-count"
+                                ></output>
+                                <button
+                                    id="vertex-increase"
+                                    type="button"
+                                    aria-label="Increase vertices"
+                                >
+                                    +
+                                </button>
+                            </div>
+                            <input
+                                id="vertex-count"
+                                type="range"
+                                min="4"
+                                max="50"
+                                value="12"
+                            />
+                        </div>
+                        <div class="setting">
+                            <label for="strength">Repulsion strength</label>
+                            <output id="strength-value" for="strength"></output>
+                            <input
+                                id="strength"
+                                type="range"
+                                min="0.001"
+                                max="1"
+                                step="0.001"
+                                value="0.05"
+                            />
+                        </div>
+                        <div class="setting">
+                            <label for="tolerance">Convergence threshold</label>
+                            <output
+                                id="tolerance-value"
+                                for="tolerance"
+                            ></output>
+                            <input
+                                id="tolerance"
+                                type="range"
+                                min="0.00002"
+                                max="0.001"
+                                step="0.00001"
+                                value="0.0001"
+                            />
+                        </div>
+                        <div class="setting numeric">
+                            <label for="max-steps">Step limit</label>
+                            <input
+                                id="max-steps"
+                                type="number"
+                                min="1"
+                                max="5000"
+                                value="5000"
+                            />
+                        </div>
+                        <div class="setting">
+                            <label for="interval">Step interval</label>
+                            <output id="interval-value" for="interval"></output>
+                            <input
+                                id="interval"
+                                type="range"
+                                min="10"
+                                max="1000"
+                                step="10"
+                                value="30"
+                            />
+                        </div>
+                    </fieldset>
+                </aside>
+            </div>
+        </main>
+        <script type="module" src="/src/main.ts"></script>
+    </body>
+</html>

@@ -3,6 +3,8 @@
 *.log
 
 build/
+node_modules/
+dist/
 .vscode/*
 !.vscode/launch.json
 !.vscode/tasks.json

@@ -2,6 +2,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug RegularPolyhedron (Web)",
+            "type": "msedge",
+            "request": "launch",
+            "url": "http://127.0.0.1:5173/",
+            "webRoot": "${workspaceFolder}",
+            "preLaunchTask": "Start RegularPolyhedron (Web)"
+        },
+        {
             "name": "Debug RegularPolyhedron (Legacy OpenGL)",
             "type": "cppvsdbg",
             "request": "launch",

@@ -2,6 +2,34 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Start RegularPolyhedron (Web)",
+            "type": "process",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/start-web-debug.ps1"
+            ],
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "vite",
+                "pattern": {
+                    "regexp": "^(.+):(\\d+):(\\d+): error: (.+)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "message": 4
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "VITE .* ready in ",
+                    "endsPattern": "Local:.*http://127\\.0\\.0\\.1:5173/"
+                }
+            }
+        },
+        {
             "label": "Build RegularPolyhedron (Legacy OpenGL)",
             "type": "process",
             "command": "powershell.exe",
