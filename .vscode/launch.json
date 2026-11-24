@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug RegularPolyhedron (Legacy OpenGL)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/legacy - based OpenGL/build/Debug/ShowMainPolyHedron.exe",
+            "cwd": "${workspaceFolder}/legacy - based OpenGL/build/Debug",
+            "preLaunchTask": "Build RegularPolyhedron (Legacy OpenGL)"
+        }
+    ]
+}

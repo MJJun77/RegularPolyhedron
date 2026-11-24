@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.21)
 project(ShowMainPolyHedron VERSION 0.1.0 LANGUAGES C CXX)
 
 add_subdirectory(externals/glfw)
@@ -20,8 +20,8 @@ add_executable(ShowMainPolyHedron
 	externals/imgui/imgui_draw.cpp
 	externals/imgui/imgui_tables.cpp
 	externals/imgui/imgui_widgets.cpp
-	externals/imgui/backends/imgui_Impl_glfw.cpp
-	externals/imgui/backends/imgui_Impl_opengl3.cpp
+	externals/imgui/backends/imgui_impl_glfw.cpp
+	externals/imgui/backends/imgui_impl_opengl3.cpp
 )
 
 target_link_libraries(ShowMainPolyHedron glm)

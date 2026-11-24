@@ -16,12 +16,15 @@ To try approximated PolyHedron with given vertex count, each given numbef or ver
 Then each vertex repulses each other on each step, as like electron behavior.
 
 ## Build
-Please don't forget to download submodule also.
+On Windows, install Visual Studio 2022 or its Build Tools with the **Desktop development with C++** workload, including a Windows SDK and CMake. Install the **C/C++** extension in VS Code.
+
+After cloning, initialize the pinned dependencies from the repository root.
+
+```powershell
+git submodule update --init --recursive
 ```
-$> git clone [this git link]
-$> cd [downloaded git dir]
-$> git submodule update --init --recursive
-```
+
+Open the repository root in VS Code, select **Debug RegularPolyhedron (Legacy OpenGL)** in **Run and Debug**, and press **F5**. The pre-launch task builds the x64 Debug targets and launches the OpenGL app from this project's `build/Debug` directory, where its relative shader and font paths resolve.
 
 ## UI menu
 1) Vertex Count : It determines PolyHedron's vertex count.  For example, if vertex count is 12, face count is : 12 * 2 - 4 = 20 (Regular PolyHedron)
